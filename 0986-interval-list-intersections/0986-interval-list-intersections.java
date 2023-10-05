@@ -4,10 +4,10 @@ class Solution {
         int i = 0, j = 0;
 
         while (i < firstList.length && j < secondList.length) {
+            int left = Math.max(firstList[i][0], secondList[j][0]);
+            int right = Math.min(firstList[i][1], secondList[j][1]);
+            
             if (firstList[i][1] <= secondList[j][1]) {
-                int left = Math.max(firstList[i][0], secondList[j][0]);
-                int right = Math.min(firstList[i][1], secondList[j][1]);
-
                 if (left <= right && (secondList[j][0] <= firstList[i][1])) {
                     list.add(new int[] { left, right });
                 }
@@ -16,9 +16,6 @@ class Solution {
             }
 
             else {
-                int left = Math.max(firstList[i][0], secondList[j][0]);
-                int right = Math.min(firstList[i][1], secondList[j][1]);
-
                 if (left <= right && (firstList[i][0] <= secondList[j][1])) {
                     list.add(new int[] { left, right });
                 }
