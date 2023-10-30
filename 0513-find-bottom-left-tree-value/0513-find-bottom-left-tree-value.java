@@ -15,35 +15,31 @@
  */
 class Solution {
     public int findBottomLeftValue(TreeNode root) {
-        if (root.left == null && root.right == null) {
-            return root.val;
+        if (root.left == null && root.right == null) return root.val;
+        
+        Queue<TreeNode> qu = new LinkedList<>();
+        int leftMost = -1;
+        qu.add(root);
+
+        while (!qu.isEmpty()) {
+            int level = qu.size();
+
+            for (int i = 0; i < level; i++) {
+                TreeNode t = qu.poll();
+                if (i == 0) {
+                    leftMost = t.val;
+                }
+
+                if (t.left != null) {
+                    qu.add(t.left);
+                }
+
+                if (t.right != null) {
+                    qu.add(t.right);
+                }
+            }
         }
 
-        return (int) findBottomLeftValue(root, 0)[0];
-    }
-
-    public long[] findBottomLeftValue(TreeNode root, int level) {
-        long fail = Integer.MIN_VALUE - 1;
-
-        if (root == null) {
-            return new long[] { fail, level };
-        }
-
-        if (root.left == null && root.right == null) {
-            return new long[] { root.val, level };
-        }
-
-        long[] left = findBottomLeftValue(root.left, level + 1);
-        long[] right = findBottomLeftValue(root.right, level + 1);
-
-        if (left[0] == fail && right[0] != fail) {
-            return right;
-        }
-
-        else if (left[0] != fail && right[0] == fail) {
-            return left;
-        }
-
-        return (left[1] >= right[1]) ? left : right;
+        return leftMost;
     }
 }
