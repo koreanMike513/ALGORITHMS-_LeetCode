@@ -1,38 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        Map<Integer, TreeNode> parents = new HashMap<>();
-        Map<Integer, Integer> depth = new HashMap<>(); 
+        Map<TreeNode, Integer> depths = new HashMap<>();
+        Map<TreeNode, TreeNode> parents = new HashMap<>();
+        Queue<TreeNode> qu = new LinkedList<>();
+        int depth = 1;
 
-        DFS(parents, depth, root, null, 1);
+        qu.add(root);
+        parents.put(root, null);
 
-        return LCA(parents, depth, p, q);
+        while(!qu.isEmpty()) {
+            int size = qu.size();
+
+            for (int i = 0; i < size; i++) {
+                TreeNode node = qu.poll();
+
+                if (node.left != null) {
+                    qu.add(node.left);
+                    parents.put(node.left, node);
+                }
+                
+                if (node.right != null) {
+                    qu.add(node.right);
+                    parents.put(node.right, node);
+                }
+
+                depths.put(node, depth);
+            }
+
+            depth++;
+        }
+
+        return findLowestCommonAncestor(p, q, depths, parents);
     }
 
-    private void DFS(Map<Integer, TreeNode> parents, Map<Integer, Integer> depth, TreeNode node, TreeNode parent, int currentDepth) {  
-        if (node == null || parents.containsKey(node.val)) {
-            return;
+    private TreeNode findLowestCommonAncestor(TreeNode p, TreeNode q, Map<TreeNode, Integer> depths, Map<TreeNode, TreeNode> parents) {
+        while (depths.get(p) < depths.get(q)) {
+            q = parents.get(q);
         }
 
-        parents.put(node.val, parent);
-        depth.put(node.val, currentDepth);
-
-        DFS(parents, depth, node.left, node, currentDepth + 1);
-        DFS(parents, depth, node.right, node, currentDepth + 1);
-    }
-
-    private TreeNode LCA(Map<Integer, TreeNode> parents, Map<Integer, Integer> depth, TreeNode p, TreeNode q) {
-        if (p == q) {
-            return p;
+        while (depths.get(p) > depths.get(q)) {
+            p = parents.get(p);
         }
 
-        if (depth.get(p.val) < depth.get(q.val)) {
-            return LCA(parents, depth, p, parents.get(q.val));
+        while (p != q) {
+            p = parents.get(p);
+            q = parents.get(q);
         }
 
-        else if (depth.get(p.val) > depth.get(q.val)) {
-            return LCA(parents, depth, parents.get(p.val), q);
-        }
-
-        return LCA(parents, depth, parents.get(p.val), parents.get(q.val));
+        return q;
     }
 }
