@@ -1,26 +1,31 @@
 class TrieNode {
-    public Map<Character, TrieNode> children;
-    public boolean isEnd;
+    Map<Character, TrieNode> children;
+    char c;
+    boolean isEnd = false;
 
     public TrieNode() {
-        this.children = new HashMap<>();
-        isEnd = false;
+        children = new HashMap<>();
+    }
+
+    public TrieNode(char c) {
+        this.c = c;
+        children = new HashMap<>();
     }
 }
 
 class Trie {
-    TrieNode root = new TrieNode();
+    TrieNode root;
 
     public Trie() {
-        
+        root = new TrieNode();  
     }
     
     public void insert(String word) {
         TrieNode current = root;
-        
+
         for (char c : word.toCharArray()) {
-            if (!current.children.containsKey(c)) 
-                current.children.put(c, new TrieNode());
+            if (!current.children.containsKey(c))
+                current.children.put(c, new TrieNode(c));
             
             current = current.children.get(c);
         }
@@ -30,22 +35,22 @@ class Trie {
     
     public boolean search(String word) {
         TrieNode current = root;
-        
+
         for (char c : word.toCharArray()) {
-            if (!current.children.containsKey(c)) 
+            if (!current.children.containsKey(c))
                 return false;
             
             current = current.children.get(c);
         }
 
-        return current.isEnd == true;
+        return current.isEnd;
     }
     
     public boolean startsWith(String prefix) {
         TrieNode current = root;
-        
+
         for (char c : prefix.toCharArray()) {
-            if (!current.children.containsKey(c)) 
+            if (!current.children.containsKey(c))
                 return false;
             
             current = current.children.get(c);
