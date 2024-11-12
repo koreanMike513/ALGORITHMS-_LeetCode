@@ -1,27 +1,31 @@
 class Solution {
     public List<String> wordBreak(String s, List<String> wordDict) {
-        List<String> ans = new ArrayList<>();
-        Set<String> dict = new HashSet<>(wordDict); 
+        List<String> list = new ArrayList<>();
+        Set<String> words = new HashSet<>(wordDict);
 
-        wordBreakHelper(ans, new ArrayList<>(), s, dict, 0);
+        findWords(s, list, words, new StringBuilder(), 0);
 
-        return ans;
+        return list;
     }
 
-    private void wordBreakHelper(List<String> ans, List<String> current, String s, Set<String> dict, int start) {
-        if (start == s.length()) {
-            ans.add(String.join(" ", current)); 
+    private void findWords(
+        String s, 
+        List<String> list, 
+        Set<String> words, 
+        StringBuilder sb,
+        int pos
+        ) {
+        if (pos >= s.length()) {
+            list.add(new StringBuilder(sb).toString().trim());
             return;
         }
-        
-        for (int end = start + 1; end <= s.length(); end++) {
-            String word = s.substring(start, end);
 
-            if (dict.contains(word)) {
-                current.add(word); 
-                wordBreakHelper(ans, current, s, dict, end); 
-                current.remove(current.size() - 1); 
+        for (int i = pos + 1; i <= s.length(); i++) {
+            if (words.contains(s.substring(pos, i))) {
+                StringBuilder t = new StringBuilder(sb);
+                t.append(s.substring(pos, i)).append(" ");
+                findWords(s, list, words, t, i);
             }
         }
-    }
+    } 
 }
