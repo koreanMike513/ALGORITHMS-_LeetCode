@@ -1,22 +1,14 @@
 class Solution {
     public int climbStairs(int n) {
+        int[] dp = new int[n + 2];
 
-        Map<Integer, Integer> rep = new HashMap<>();
-        rep.put(0, 1);
-        rep.put(1, 1);
+        dp[1] = 1;
+        dp[2] = 2;
 
-        int result = pivonacci(n, rep);
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
 
-        return result;
-    }
-
-    public int pivonacci(int n, Map<Integer, Integer> rep) {
-        if (rep.containsKey(n)) return rep.get(n);
-
-        int sum = pivonacci(n - 1, rep) + pivonacci(n - 2, rep);
-
-        rep.put(n, sum);
-
-        return sum;
+        return dp[n];
     }
 }
