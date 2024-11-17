@@ -10,8 +10,8 @@ class Solution {
             characters[c - 'a']--;
         }
 
-        for (int i = 0; i < 26; i++) {
-            if (characters[i] != 0)
+        for (int character : characters) {
+            if (character != 0)
                 return false;
         }
 
