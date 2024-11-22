@@ -1,37 +1,38 @@
 class Solution {
-
     public int takeCharacters(String s, int k) {
-        int[] count = new int[3];
-        int n = s.length();
+        int[] total = new int[3], current = new int[3];
+        int n = s.length(), start = 0, len = 0;
 
         for (char c : s.toCharArray()) {
-            count[c - 'a']++;
+            total[c - 'a']++;
         }
 
-        for (int i = 0; i < 3; i++) {
-            if (count[i] < k) 
-                return -1;
-        }
+        if (total[0] < k || total[1] < k || total[2] < k)
+            return -1;
+        
+        if (k == 0)
+            return 0;
 
-        int[] window = new int[3];
-        int left = 0, maxWindow = 0;
+        for (int end = 0; end < n; end++) {
+            char c = s.charAt(end);
+            current[c - 'a']++;
 
-        for (int right = 0; right < n; right++) {
-            window[s.charAt(right) - 'a']++;
-
-            while (
-                left <= right &&
-                (count[0] - window[0] < k ||
-                    count[1] - window[1] < k ||
-                    count[2] - window[2] < k)
+            while (   
+                total[0] - current[0] < k ||
+                total[1] - current[1] < k ||
+                total[2] - current[2] < k 
             ) {
-                window[s.charAt(left) - 'a']--;
-                left++;
+                if (start > end)
+                    break;
+
+                char remove = s.charAt(start);
+                current[remove - 'a']--;
+                start++;
             }
 
-            maxWindow = Math.max(maxWindow, right - left + 1);
+            len = Math.max(len, end - start + 1);
         }
 
-        return n - maxWindow;
+        return n - len;
     }
 }
