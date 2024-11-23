@@ -1,32 +1,30 @@
 class Solution {
     public char[][] rotateTheBox(char[][] box) {
-        char[][] ans = new char[box[0].length][box.length];
-        int row = 0, column = box.length - 1;
+        int n = box[0].length, m = box.length;
+        char[][] ans = new char[n][m];
 
-        for (int i = 0; i < box.length; i++) {
-            char[] arr = box[i];
-            for (int j = 0; j < arr.length; j++) {
-                ans[row++][column] = arr[j];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = 0; j < n; j++) {
+                ans[j][m - i - 1] = box[i][j];
             }
-
-            row = 0;
-            column--;
         }
 
-        for (int k = ans.length - 1; k >= 0 ; k--) {
-            for (int l = 0; l < ans[k].length; l++) {
-                if (ans[k][l] == '#') {
-                    int m = k;
-                    while (m < ans.length - 1 && ans[m + 1][l] =='.') {
-                        char stone = ans[m][l];
-                        ans[m][l] = ans[m + 1][l];
-                        ans[m + 1][l] = stone;
-                        m++;
-                    }
-                }
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = 0; j < m; j++) {
+                if (ans[i][j] == '#') 
+                    applyGravity(ans, i, j);
             }
         }
 
         return ans;
+    }
+
+    private void applyGravity(char[][] ans, int x, int y) {
+        while (x + 1 < ans.length && ans[x + 1][y] == '.') {
+            char temp = ans[x][y];
+            ans[x][y] = ans[x + 1][y];
+            ans[x + 1][y] = temp;
+            x++;
+        }
     }
 }
