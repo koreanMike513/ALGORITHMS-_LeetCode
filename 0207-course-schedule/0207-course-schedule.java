@@ -1,43 +1,38 @@
 class Solution {
-    enum Status {
-        NOT_VISITED, VISITED, VISITING;
-    }
-    
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        if(prerequisites == null || prerequisites.length == 0 || prerequisites[0].length == 0) return true;
-        // building graph
-        List<List<Integer>> list = new ArrayList<>(numCourses);
+        Queue<Integer> zeroDegrees = new LinkedList<>();
+        int[] degrees = new int[numCourses];
 
-        for (int i = 0; i < numCourses; i++) {
-            list.add(new ArrayList<Integer>());
+        for (int[] prerequisite : prerequisites) {
+            degrees[prerequisite[0]]++;
         }
 
-        for (int[] p: prerequisites) {
-            int prerequisite = p[1];
-            int course = p[0];
-            list.get(course).add(prerequisite);
+        for (int i = 0; i < degrees.length; i++) {
+            if (degrees[i] == 0)
+                zeroDegrees.add(i);
         }
+
+        if (zeroDegrees.isEmpty())
+            return false;
         
-        Status[] visited = new Status[numCourses];
+        while (!zeroDegrees.isEmpty()) {
+            int course = zeroDegrees.poll();
 
-        for (int i = 0; i < numCourses; i++) {
-            // if there is a cycle, return false
-            if (dfs(list, visited, i)) return false;
+            for (int[] prerequisite : prerequisites) {
+                if (prerequisite[1] == course) {
+                    degrees[prerequisite[0]]--;
+
+                    if (degrees[prerequisite[0]] == 0)
+                        zeroDegrees.add(prerequisite[0]);
+                }
+            }
+        }
+
+        for (int i = 0; i < degrees.length; i++) {
+            if (degrees[i] != 0)
+                return false;
         }
 
         return true;
-    }
-    
-    private boolean dfs(List<List<Integer>> list, Status[] visited, int cur) {
-        if (visited[cur] == Status.VISITING) return true;
-        if (visited[cur] == Status.VISITED) return false;
-        visited[cur] = Status.VISITING;
-
-        for(int next: list.get(cur)) {
-            if (dfs(list, visited, next)) return true;
-        }
-        
-        visited[cur] = Status.VISITED;
-        return false;
-    }
+    }   
 }
