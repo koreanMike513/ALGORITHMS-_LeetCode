@@ -1,33 +1,34 @@
 class Solution {
+
     public double maxAverageRatio(int[][] classes, int extraStudents) {
-        PriorityQueue<double[]> pq = new PriorityQueue<>(new Comparator<double[]>(){
-            public int compare(double[] a, double[] b){
-                double adiff = (a[0] + 1) / (a[1] + 1) - (a[0] / a[1]);                
-                double bdiff = (b[0] + 1) / (b[1] + 1) - (b[0] / b[1]);
-                
-                if (adiff == bdiff) 
-                    return 0;
-                
-                return adiff > bdiff ? -1 : 1;
-            }
-        });
+        PriorityQueue<double[]> pq = new PriorityQueue<>(
+            (a, b) -> Double.compare(b[0], a[0])
+        );
 
         for (int[] c : classes) {
-            pq.add(new double[] { c[0], c[1] });
+            double gain = calculateGain(c[0], c[1]);
+            pq.add(new double[]{ gain, (double) c[0], (double) c[1] });
         }
 
-        for (int i = 0; i < extraStudents; i++) {
-            double[] current = pq.poll();
-            pq.add(new double[]{ current[0] + 1, current[1] + 1 });
+        while (extraStudents > 0) {
+            double[] c = pq.poll();
+            double gain = calculateGain((int) c[1] + 1, (int) c[2] + 1);
+            pq.add(new double[]{ gain, c[1] + 1, c[2] + 1 });
+
+            extraStudents--;
         }
 
-        double ans = 0;
+        double totalPassRatio = 0.0;
 
         while (!pq.isEmpty()) {
-            double[] current = pq.poll();
-            ans += current[0] / current[1];
+            double[] c = pq.poll();
+            totalPassRatio += (c[1] / c[2]);
         }
 
-        return ans / classes.length;
+        return totalPassRatio / (double) classes.length;
+    }
+
+    private double calculateGain(int pass, int total) {
+        return (((double) pass + 1) / ((double) total + 1)) - ((double) pass) / ((double) total);
     }
 }
