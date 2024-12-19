@@ -1,17 +1,18 @@
 class Solution {
     public int[] finalPrices(int[] prices) {
-        Stack<Integer> stack = new Stack<>();
+        Stack<Integer> st = new Stack<>();
+        int n = prices.length;
+        int[] ans = Arrays.copyOf(prices, n);
 
-        for (int i = 0; i < prices.length; i++) {
-
-            while (!stack.isEmpty() && prices[stack.peek()] >= prices[i]) {
-                prices[stack.peek()] = prices[stack.peek()] - prices[i];
-                stack.pop();
+        for (int i = 0; i < n; i++) {
+            while (!st.isEmpty() && prices[st.peek()] >= prices[i]) {
+                int idx = st.pop();
+                ans[idx] = prices[idx] - prices[i];
             }
-
-            stack.push(i);
+            
+            st.push(i);
         }
 
-        return prices;
+        return ans;
     }
 }
