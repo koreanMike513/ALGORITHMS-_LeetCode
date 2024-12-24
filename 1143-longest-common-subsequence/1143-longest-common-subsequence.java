@@ -4,15 +4,13 @@ class Solution {
         int[][] dp = new int[n + 1][m + 1];
 
         for (int i = n - 1; i >= 0; i--) {
-            for (int j = m - 1; j >= 0; j--) {
+            for (int j = m - 1; j >= 0; j--) {      
                 dp[i][j] = (text1.charAt(i) == text2.charAt(j)) 
-                ? dp[i + 1][j + 1] + 1 
+                ? dp[i + 1][j + 1] + 1
                 : Math.max(dp[i + 1][j], dp[i][j + 1]);
-            }
-        }
 
-        for (int j = 0; j < m; j++) {
-            ans = Math.max(ans, dp[0][j]);
+                ans = Math.max(ans, dp[i][j]);
+            }
         }
 
         return ans;
