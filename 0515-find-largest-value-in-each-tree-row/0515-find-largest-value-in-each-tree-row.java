@@ -15,38 +15,32 @@
  */
 class Solution {
     public List<Integer> largestValues(TreeNode root) {
-        List<Integer> ans = new ArrayList<>();
         Queue<TreeNode> qu = new LinkedList<>();
-        
-        if (root == null) {
-            return ans;
-        }
+        List<Integer> list = new ArrayList<>();
 
-        qu.add(root);
+        if (root != null)
+            qu.add(root);
 
-        while (!qu.isEmpty()) {
-            int max = Integer.MIN_VALUE;
-            int level = qu.size();
+        while(!qu.isEmpty()) {
+            int size = qu.size();
+            int v = Integer.MIN_VALUE;
 
-            for (int i = 0; i < level; i++) {
+            for (int i = 0; i < size; i++) {
                 TreeNode node = qu.poll();
+
+                if (node.val > v)
+                    v = node.val;
                 
-                if (max < node.val) {
-                    max = node.val;
-                }
-
-                if (node.left != null) {
+                if (node.left != null)
                     qu.add(node.left);
-                }
-
-                if (node.right != null) {
+                
+                if (node.right != null)
                     qu.add(node.right);
-                }
             }
 
-            ans.add(max);
+            list.add(v);
         }
 
-        return ans;
+        return list;
     }
 }
