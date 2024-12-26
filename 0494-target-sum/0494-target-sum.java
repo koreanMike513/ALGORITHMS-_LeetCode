@@ -1,26 +1,26 @@
 class Solution {
     public int findTargetSumWays(int[] nums, int target) {
-        return findTargetSumWays(nums, new HashMap<>(), target, 0);
-    }
+        int sum = 0, n = nums.length;
 
-    public int findTargetSumWays(int[] nums, Map<String, Integer> map, int target, int idx) {
-        if (idx >= nums.length) {
-            return (target == 0) ? 1 : 0;
+        for (int num : nums) {
+            sum += num;
         }
 
-        String key = target + "()" + idx;
+        int[][] dp = new int[n][2 * sum + 1];
+        dp[0][ nums[0] + sum] = 1;
+        dp[0][-nums[0] + sum] += 1;
 
-        if (map.containsKey(key)) {
-            return map.get(key);
+        for (int i = 1; i < n; i++) {
+            for (int s = -sum; s <= sum; s++) {
+                if (dp[i - 1][s + sum] > 0) {
+                    dp[i][s + nums[i] + sum] += dp[i - 1][s + sum];
+                    dp[i][s - nums[i] + sum] += dp[i - 1][s + sum];
+                }
+            }
         }
 
-        int count = (
-            findTargetSumWays(nums, map, target - nums[idx], idx + 1) + 
-            findTargetSumWays(nums, map, target + nums[idx], idx + 1)
-        );
-
-        map.put(key, count);
-
-        return count;
+        return Math.abs(target) > sum
+            ? 0
+            : dp[n - 1][target + sum];
     }
 }
